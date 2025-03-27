@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aditya Document Showcase</title>
+    <link rel="icon" href="logo 2.png">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: white;
+            margin: 20px;
+            text-align: center;
+        }
+        .search-container {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .search-box {
+            padding: 10px;
+            width: 250px;
+            border: none;
+            border-radius: 5px;
+            outline: none;
+        }
+        .search-button {
+            padding: 10px 15px;
+            border: none;
+            background-color: #ff9800;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-left: 10px;
+        }
+        .search-button:hover {
+            background-color: #e68900;
+        }
+        .suggestions {
+            position: absolute;
+            background-color: #1e1e1e;
+            width: 250px;
+            max-height: 150px;
+            overflow-y: auto;
+            border-radius: 5px;
+            text-align: left;
+            display: none;
+            box-shadow: 0px 0px 10px rgba(255, 152, 0, 0.8);
+        }
+        .suggestions div {
+            padding: 10px;
+            cursor: pointer;
+        }
+        .suggestions div:hover {
+            background-color: #333;
+        }
+        .document-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .document {
+            border: 1px solid #444;
+            padding: 15px;
+            margin: 10px;
+            width: 250px;
+            text-align: center;
+            background-color: #1e1e1e;
+            border-radius: 10px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .document:hover {
+            transform: scale(1.05);
+            box-shadow: 0px 0px 10px rgba(255, 152, 0, 0.8);
+        }
+        .document img {
+            width: 100px;
+            height: 100px;
+            border-radius: 5px;
+        }
+        a {
+            color: #ff9800;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Aditya Document Showcase</h1>
+    <div class="search-container">
+        <input type="text" id="search" class="search-box" placeholder="Search documents..." onkeyup="showSuggestions(event)" onkeydown="handleEnter(event)">
+        <button class="search-button" onclick="searchDocuments()">Search</button>
+        <div class="suggestions" id="suggestions"></div>
+    </div>
+    
+    <div class="document-list" id="docList">
+        <div class="document" data-name="Resume">
+            <h3>Resume</h3>
+            <img src="resume.jpg" alt="Resume">
+            <p><a href="resume.pdf" download>Download PDF</a> | <a href="resume.jpg" download>Download Image</a></p>
+        </div>
+        <div class="document" data-name="Certificate">
+            <h3>Certificate</h3>
+            <img src="document.html/docs/AAtharcard.png" alt="Certificate">
+            <p><a href="document.html/docs/AATHAR CARD.pdf" download>Download PDF</a> | <a href="document.html/docs/AAtharcard.png" download>Download Image</a></p>
+        </div>
+    </div>
+    
+    <script>
+        let documents = document.querySelectorAll(".document");
+        let docNames = Array.from(documents).map(doc => doc.getAttribute("data-name"));
+
+        function searchDocuments() {
+            let input = document.getElementById("search").value.toLowerCase();
+            let documents = document.querySelectorAll(".document");
+            let suggestionsBox = document.getElementById("suggestions");
+
+            suggestionsBox.style.display = "none"; // Hide suggestions on search
+
+            documents.forEach(doc => {
+                let name = doc.getAttribute("data-name").toLowerCase();
+                doc.style.display = name.includes(input) ? "flex" : "none";
+            });
+        }
+
+        function showSuggestions(event) {
+            let input = event.target.value.toLowerCase();
+            let suggestionsBox = document.getElementById("suggestions");
+            suggestionsBox.innerHTML = "";
+
+            if (input.length === 0) {
+                suggestionsBox.style.display = "none";
+                return;
+            }
+
+            let matches = docNames.filter(name => name.toLowerCase().includes(input)); // Changed from startsWith() to includes()
+
+            if (matches.length > 0) {
+                matches.forEach(match => {
+                    let div = document.createElement("div");
+                    div.textContent = match;
+                    div.onclick = function() {
+                        document.getElementById("search").value = match;
+                        suggestionsBox.style.display = "none";
+                        searchDocuments();
+                    };
+                    suggestionsBox.appendChild(div);
+                });
+                suggestionsBox.style.display = "block";
+            } else {
+                suggestionsBox.style.display = "none";
+            }
+        }
+
+        function handleEnter(event) {
+            if (event.key === "Enter") {
+                searchDocuments();
+            }
+        }
+    </script>
+</body>
+</html>
